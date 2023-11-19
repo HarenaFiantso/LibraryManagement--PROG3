@@ -9,7 +9,7 @@ import org.example.entity.enumeration.Topic;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Book {
-    private String bookId;
+    private long bookId;
     private String bookName;
     private long authorId;
     private int pageNumbers;
