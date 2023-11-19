@@ -11,13 +11,13 @@ import java.util.List;
 
 public class AuthorCrudOperations implements CRUDOperations<Author> {
     private static final String SELECT_ALL_QUERY = "SELECT * FROM author";
-    private static final String INSERT_QUERY = "INSERT INTO author (author_name, sex) VALUES (?, ?)";
-    private static final String DELETE_QUERY = "DELETE FROM author WHERE author_id = ?";
+    private static final String INSERT_QUERY = "INSERT INTO author (authorName, sex) VALUES (?, ?)";
+    private static final String DELETE_QUERY = "DELETE FROM author WHERE authorId = ?";
 
     private static final Connection connection = DatabaseConnection.getConnection();
 
     public static Author authorInstance(ResultSet resultSet) throws SQLException {
-        return new Author(resultSet.getLong("author_id"), resultSet.getString("author_name"), Sex.valueOf(resultSet.getString("sex")));
+        return new Author(resultSet.getLong("authorId"), resultSet.getString("authorName"), Sex.valueOf(resultSet.getString("sex")));
     }
 
     @Override

@@ -11,4 +11,7 @@ public class Subscriber {
     private Long subscriberId;
     private String subscriberName;
     private String sex;
+
+    public Subscriber(String subscriberName, String sex) {
+    }
 }

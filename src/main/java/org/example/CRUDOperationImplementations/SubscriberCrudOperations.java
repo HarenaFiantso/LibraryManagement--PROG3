@@ -13,8 +13,8 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     private static Subscriber subscriberInstance(ResultSet resultSet) throws SQLException {
         return new Subscriber(
-                resultSet.getLong("subscriber_id"),
-                resultSet.getString("subscriber_name"),
+                resultSet.getLong("subscriberId"),
+                resultSet.getString("subscriberName"),
                 resultSet.getString("sex")
         );
     }
@@ -40,7 +40,7 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
     public List<Subscriber> saveAll(List<Subscriber> toSave) {
         List<Subscriber> subscribers = new ArrayList<>();
 
-        String INSERT_QUERY = "INSERT INTO subscriber (subscriber_name, sex) VALUES (?, ?)";
+        String INSERT_QUERY = "INSERT INTO subscriber (subscriberName, sex) VALUES (?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -63,7 +63,7 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public Subscriber save(Subscriber toSave) {
-        String INSERT_QUERY = "INSERT INTO subscriber (subscriber_name, sex) VALUES (?, ?);";
+        String INSERT_QUERY = "INSERT INTO subscriber (subscriberName, sex) VALUES (?, ?);";
         Subscriber subscriber = null;
 
         try {
@@ -86,7 +86,7 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public Subscriber delete(Subscriber toDelete) {
-        String DELETE_QUERY = "DELETE FROM subscriber WHERE subscriber_id = ?";
+        String DELETE_QUERY = "DELETE FROM subscriber WHERE subscriberId = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);

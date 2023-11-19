@@ -1,11 +1,11 @@
 package org.example.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.entity.enumeration.Sex;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Author {
