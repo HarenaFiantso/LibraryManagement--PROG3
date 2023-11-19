@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.CRUDOperationImplementations.AuthorCrudOperations;
+import org.example.crudOperationImplementations.AuthorCrudOperations;
 import org.example.entity.Author;
 import org.example.entity.enumeration.Sex;
 

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.crudOperationImplementations;
 
 import java.util.List;
 
