@@ -2,14 +2,13 @@ package org.example.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class User {
-    private Long userId;
-    private String username;
-    private String password;
-    private String email;
+public class Administrator extends User {
+    private String role;
 }
