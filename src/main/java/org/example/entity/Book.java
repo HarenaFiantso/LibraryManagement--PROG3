@@ -5,15 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.entity.enumeration.Topic;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Book {
     private long bookId;
-    private String title;
-    private long authorId;
+    private String bookName;
     private int pageNumbers;
-    private Topic topic;
+    private List<Topic> topics;
     private String releaseDate;
     private String status;
+    private Author author;
 }
