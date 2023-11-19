@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.example.entity.enumeration.Topic;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -19,6 +20,10 @@ public class Book {
     private String releaseDate;
     private String status;
     private Author author;
+
+
+    public Book(String bookName, int pagaNumbers, List<Topic> topics, LocalDate releaseDate, String status, int authorId) {
+    }
 
     public Book(long bookId, String bookName, int pageNumbers, List<Topic> topics, Date releaseDate, String status, int authorId) {
     }

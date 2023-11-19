@@ -58,7 +58,7 @@ public class BookCrudOperations implements CRUDOperations<Book> {
             for (Book book : toSave) {
                 statement.setString(1, book.getBookName());
                 statement.setInt(2, book.getPageNumbers());
-                
+
                 Array topicsArray = connection.createArrayOf("topic", book.getTopics().stream().map(Enum::name).toArray());
                 statement.setArray(3, topicsArray);
 
@@ -104,17 +104,13 @@ public class BookCrudOperations implements CRUDOperations<Book> {
 
     @Override
     public Book delete(Book toDelete) {
-        String DELETE_QUERY = "DELETE FROM book WHERE book_id = ?;";
+        String DELETE_QUERY = "DELETE FROM book WHERE book_id = ?";
         Book book = null;
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
             statement.setLong(1, toDelete.getBookId());
-            statement.executeUpdate();
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                toDelete.setBookId(Long.parseLong(resultSet.getString(1)));
+            int deletedRows = statement.executeUpdate();
+            if (deletedRows > 0) {
                 book = toDelete;
             }
         } catch (SQLException e) {

@@ -21,10 +21,11 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public List<Subscriber> findAll() {
-        String SELECT_ALL_QUERY = "SELECT * FROM subscriber;";
+        String SELECT_ALL_QUERY = "SELECT * FROM subscriber";
         List<Subscriber> subscribers = new ArrayList<>();
 
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_QUERY);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_ALL_QUERY);
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
@@ -63,11 +64,12 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public Subscriber save(Subscriber toSave) {
-        String INSERT_QUERY = "INSERT INTO subscriber (subscriberName, sex) VALUES (?, ?);";
+        String INSERT_QUERY = "INSERT INTO subscriber (subscriberName, sex) VALUES (?, ?)";
         Subscriber subscriber = null;
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+
             statement.setString(1, toSave.getSubscriberName());
             statement.setString(2, toSave.getSex());
             statement.executeUpdate();
@@ -88,8 +90,9 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
     public Subscriber delete(Subscriber toDelete) {
         String DELETE_QUERY = "DELETE FROM subscriber WHERE subscriberId = ?";
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)) {
+
             statement.setLong(1, toDelete.getSubscriberId());
             statement.executeUpdate();
             return toDelete;

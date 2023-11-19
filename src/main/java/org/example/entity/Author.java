@@ -12,4 +12,7 @@ public class Author {
     private long authorId;
     private String authorName;
     private Sex sex;
+
+    public Author(String authorName, Sex sex) {
+    }
 }
