@@ -67,6 +67,22 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public Subscriber delete(Subscriber toDelete) {
-        return null;
+        String DELETE_QUERY = "DELETE FROM subscriber WHERE subscriber_id = ?;";
+        Subscriber subscriber = null;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+            statement.setLong(1, toDelete.getSubscriberId());
+            statement.executeUpdate();
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                toDelete.setSubscriberId(Long.parseLong(resultSet.getString(1)));
+                subscriber = toDelete;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return subscriber;
     }
 }
