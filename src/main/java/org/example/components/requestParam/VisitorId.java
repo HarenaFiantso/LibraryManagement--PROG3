@@ -1,4 +1,4 @@
-package components.requestParam;
+package org.example.components.requestParam;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
