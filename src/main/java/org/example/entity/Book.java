@@ -20,6 +20,6 @@ public class Book {
     private String status;
     private Author author;
 
-    public Book(long bookId, String bookName, int pageNumbers, List<Topic> topics, Date releaseDate, int authorId) {
+    public Book(long bookId, String bookName, int pageNumbers, List<Topic> topics, Date releaseDate, String status, int authorId) {
     }
 }

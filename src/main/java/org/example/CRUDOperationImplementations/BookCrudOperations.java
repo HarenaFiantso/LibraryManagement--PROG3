@@ -5,12 +5,11 @@ import org.example.DatabaseConnection;
 import org.example.entity.Book;
 import org.example.entity.enumeration.Topic;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookCrudOperations implements CRUDOperations<Book> {
     private final Connection connection = DatabaseConnection.getConnection();
@@ -23,6 +22,7 @@ public class BookCrudOperations implements CRUDOperations<Book> {
                 resultSet.getInt("page_numbers"),
                 topics,
                 resultSet.getDate("release_date"),
+                resultSet.getString("status"),
                 resultSet.getInt("author_id")
         );
     }
@@ -45,12 +45,34 @@ public class BookCrudOperations implements CRUDOperations<Book> {
 
     @Override
     public List<Book> saveAll(List<Book> toSave) {
-        return null;
+        List<Book> books = new ArrayList<>();
+        toSave.forEach(e -> books.add(save(e)));
+        return books;
     }
 
     @Override
     public Book save(Book toSave) {
-        return null;
+        String topics = toSave.getTopics().stream().map(e -> "'" + e.toString() + "'::\"topic\"").collect(Collectors.joining(", "));
+        String INSERT_QUERY = "INSERT INTO book (book_name, page_numbers, topics, release_date) VALUES (?, ?, ARRAY[" + topics + "] , ?);";
+        Book book = null;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, toSave.getBookName());
+            statement.setInt(2, toSave.getPageNumbers());
+            statement.setDate(4, Date.valueOf(toSave.getReleaseDate()));
+
+            statement.executeUpdate();
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                toSave.setBookId(Long.parseLong(resultSet.getString(1)));
+                book = toSave;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return book;
     }
 
     @Override
