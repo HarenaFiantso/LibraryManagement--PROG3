@@ -1,5 +1,5 @@
 -- Create the table author
-CREATE TABLE author (
+CREATE TABLE IF NOT EXISTS author (
     authorId SERIAL PRIMARY KEY,
     authorName VARCHAR(255) NOT NULL,
     sex CHAR(1) CHECK (sex IN ('M', 'F')) NOT NULL
