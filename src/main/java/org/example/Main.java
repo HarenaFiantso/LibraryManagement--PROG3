@@ -6,16 +6,20 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/library_management";
-        String user = "prog_admin";
-        String password = "123456";
+        String jdbcUrl = System.getenv("JDBC_URL");
+        String user = System.getenv("DB_USER");
+        String password = System.getenv("DB_PASSWORD");
+
+        System.out.println("JDBC_URL: " + jdbcUrl);
+        System.out.println("DB_USER: " + user);
+        System.out.println("DB_PASSWORD: " + password);
 
         try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password)) {
             if (connection != null) {
                 System.out.println("Database connected ! ");
             }
         } catch (SQLException e) {
-            System.out.println("Database connection error : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

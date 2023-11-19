@@ -38,4 +38,4 @@ build/
 .DS_Store
 
 ### Other gitignore files ###
-src/main/java/org/example/env.properties
+src/main/java/org/example/.env
