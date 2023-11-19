@@ -39,7 +39,9 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public List<Subscriber> saveAll(List<Subscriber> toSave) {
-        return null;
+        List<Subscriber> subscribers = new ArrayList<>();
+        toSave.forEach(e -> subscribers.add(save(e)));
+        return subscribers;
     }
 
     @Override

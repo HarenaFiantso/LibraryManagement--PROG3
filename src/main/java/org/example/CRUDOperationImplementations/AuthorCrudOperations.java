@@ -39,7 +39,7 @@ public class AuthorCrudOperations implements CRUDOperations<Author> {
     @Override
     public List<Author> saveAll(List<Author> toSave) {
         List<Author> authors = new ArrayList<>();
-        toSave.forEach(e -> authors.add((Author) save(e)));
+        toSave.forEach(e -> authors.add(save(e)));
         return authors;
     }
 
@@ -85,5 +85,4 @@ public class AuthorCrudOperations implements CRUDOperations<Author> {
         }
         return author;
     }
-
 }
