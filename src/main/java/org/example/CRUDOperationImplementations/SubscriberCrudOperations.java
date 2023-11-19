@@ -24,8 +24,9 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
         String SELECT_ALL_QUERY = "SELECT * FROM subscriber;";
         List<Subscriber> subscribers = new ArrayList<>();
 
-        try {
-            ResultSet resultSet = connection.prepareStatement(SELECT_ALL_QUERY).executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_QUERY);
+             ResultSet resultSet = statement.executeQuery()) {
+
             while (resultSet.next()) {
                 subscribers.add(subscriberInstance(resultSet));
             }
@@ -38,7 +39,25 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
     @Override
     public List<Subscriber> saveAll(List<Subscriber> toSave) {
         List<Subscriber> subscribers = new ArrayList<>();
-        toSave.forEach(e -> subscribers.add(save(e)));
+
+        String INSERT_QUERY = "INSERT INTO subscriber (subscriber_name, sex) VALUES (?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+
+            for (Subscriber subscriber : toSave) {
+                statement.setString(1, subscriber.getSubscriberName());
+                statement.setString(2, subscriber.getSex());
+                statement.executeUpdate();
+
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    subscriber.setSubscriberId(resultSet.getLong(1));
+                    subscribers.add(subscriber);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return subscribers;
     }
 
@@ -67,22 +86,16 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public Subscriber delete(Subscriber toDelete) {
-        String DELETE_QUERY = "DELETE FROM subscriber WHERE subscriber_id = ?;";
-        Subscriber subscriber = null;
+        String DELETE_QUERY = "DELETE FROM subscriber WHERE subscriber_id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
             statement.setLong(1, toDelete.getSubscriberId());
             statement.executeUpdate();
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                toDelete.setSubscriberId(Long.parseLong(resultSet.getString(1)));
-                subscriber = toDelete;
-            }
+            return toDelete;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return subscriber;
+        return null;
     }
 }
