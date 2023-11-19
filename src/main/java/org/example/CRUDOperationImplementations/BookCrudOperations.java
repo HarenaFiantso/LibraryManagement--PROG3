@@ -15,7 +15,10 @@ public class BookCrudOperations implements CRUDOperations<Book> {
     private final Connection connection = DatabaseConnection.getConnection();
 
     public static Book bookInstance(ResultSet resultSet) throws SQLException {
-        List<Topic> topics = Arrays.stream((String[]) resultSet.getArray("topics").getArray()).map(Topic::valueOf).toList();
+        List<Topic> topics = Arrays.stream((String[]) resultSet.getArray("topics").getArray())
+                .map(Topic::valueOf)
+                .toList();
+
         return new Book(
                 resultSet.getLong("book_id"),
                 resultSet.getString("book_name"),
@@ -32,8 +35,9 @@ public class BookCrudOperations implements CRUDOperations<Book> {
         String SELECT_ALL_QUERY = "SELECT * FROM book";
         List<Book> books = new ArrayList<>();
 
-        try {
-            ResultSet resultSet = connection.prepareStatement(SELECT_ALL_QUERY).executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_QUERY);
+             ResultSet resultSet = statement.executeQuery()) {
+
             while (resultSet.next()) {
                 books.add(bookInstance(resultSet));
             }
@@ -46,7 +50,30 @@ public class BookCrudOperations implements CRUDOperations<Book> {
     @Override
     public List<Book> saveAll(List<Book> toSave) {
         List<Book> books = new ArrayList<>();
-        toSave.forEach(e -> books.add(save(e)));
+
+        String INSERT_QUERY = "INSERT INTO book (book_name, page_numbers, topics, release_date) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+
+            for (Book book : toSave) {
+                statement.setString(1, book.getBookName());
+                statement.setInt(2, book.getPageNumbers());
+                
+                Array topicsArray = connection.createArrayOf("topic", book.getTopics().stream().map(Enum::name).toArray());
+                statement.setArray(3, topicsArray);
+
+                statement.setDate(4, Date.valueOf(book.getReleaseDate()));
+
+                statement.executeUpdate();
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    book.setBookId(resultSet.getLong(1));
+                    books.add(book);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return books;
     }
 
