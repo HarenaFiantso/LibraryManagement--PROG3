@@ -1,4 +1,4 @@
-package org.example.entity.ENUM;
+package org.example.entity.enumeration;
 
 public enum Topic {
     COMEDY,
