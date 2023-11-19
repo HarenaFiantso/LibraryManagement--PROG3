@@ -6,25 +6,15 @@ import lombok.NoArgsConstructor;
 import org.example.entity.enumeration.Topic;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class Book {
-    private long bookId;
-    private String bookName;
-    private int pageNumbers;
+    private String id, bookName;
+    private long pageNumbers;
+    private Date releaseDate;
     private List<Topic> topics;
-    private String releaseDate;
-    private String status;
     private Author author;
-
-
-    public Book(String bookName, int pagaNumbers, List<Topic> topics, LocalDate releaseDate, String status, int authorId) {
-    }
-
-    public Book(long bookId, String bookName, int pageNumbers, List<Topic> topics, Date releaseDate, String status, int authorId) {
-    }
 }

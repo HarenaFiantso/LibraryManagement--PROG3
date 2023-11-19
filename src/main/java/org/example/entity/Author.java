@@ -7,12 +7,8 @@ import org.example.entity.enumeration.Sex;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class Author {
-    private long authorId;
-    private String authorName;
+    private String id, name;
     private Sex sex;
-
-    public Author(String authorName, Sex sex) {
-    }
 }

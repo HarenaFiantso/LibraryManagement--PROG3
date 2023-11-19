@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class User {
-    private long userId;
-    private String username;
-    private String password;
-    private String email;
+    protected String id, name;
 }

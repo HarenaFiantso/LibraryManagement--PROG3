@@ -58,7 +58,7 @@ public class AuthorCrudOperations implements CRUDOperations<Author> {
 
     public Author save(Author toSave) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement statement = connection.prepareStatement(INSERT_QUERY)) {
             statement.setString(1, toSave.getAuthorName());
             statement.setString(2, toSave.getSex().toString());
             statement.executeUpdate();
