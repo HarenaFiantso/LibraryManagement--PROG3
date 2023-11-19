@@ -1,12 +1,12 @@
 -- Create the table subscriber
-CREATE TABLE IF NOT EXISTS subscriber (
-    subscriberId SERIAL PRIMARY KEY,
-    subscriberName VARCHAR(255) NOT NULL,
-    sex VARCHAR(255) NOT NULL
+CREATE TABLE IF NOT EXISTS "subscriber" (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL,
+    "ref" VARCHAR(255) NOT NULL
 );
 
 -- Insert data for the table
-INSERT INTO subscriber (subscriberName, sex) VALUES
-('User 1', 'M'),
-('User 2', 'F'),
-('User 3', 'M');
+INSERT INTO subscriber (name, ref) VALUES
+('User 1', 'tsy aiko'),
+('User 2', 'tsy aiko'),
+('User 3', 'tsy aiko');
