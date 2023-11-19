@@ -1,0 +1,581 @@
+openapi: 3.0.3
+info:
+  title: Library API
+  version: 1.12.0
+  description: STD22001
+servers:
+  - url: https://library.com
+
+security:
+  - BearerAuth: [ ]
+
+tags:
+  - name: Books
+  - name: Authors
+  - name: Visitors
+paths:
+  /books:
+    get:
+      tags:
+        - Books
+      summary: Get all books
+      description: The returned books are ordered by updated datetime.
+      operationId: getBooks
+      security: []
+      parameters:
+        - in: query
+          name: bookName
+          description: Filter return books by given name
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: releaseDateMin
+          description: |
+            If  `releaseDateMax` is not provided, `releaseDateMin` is ignored.
+            `releaseDateMin` can not be after `releaseDateMax`.
+          schema:
+            type: string
+            format: date
+          required: false
+        - in: query
+          name: releaseDateMax
+          description: |
+            If  `releaseDateMin` is not provided, `releaseDateMax` is ignored.
+            `releaseDateMax` can not be after `releaseDateMin`.
+          schema:
+            type: string
+            format: date
+          required: false
+        - $ref: '#/components/parameters/queryPagination'
+        - in: query
+          name: pageSize
+          description: |
+            The count of all books in each page
+          schema:
+            type: integer
+            default: 50
+          required: false
+      responses:
+        200:
+          $ref: '#/components/responses/BookList_200'
+
+  /books/{status}:
+    get:
+      tags:
+        - Books
+      summary: Get the list of books based on status
+      operationId: getBooksByStatus
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/BookStatus'
+      responses:
+        200:
+          description: The list of books based on status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+                  
+    put:
+      tags:
+        - Books
+      summary: Create or update a list of books
+      operationId: crupdateBooks
+      parameters:
+        - $ref: '#/components/parameters/BookStatus'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CrupdateBook'
+      responses:
+        200:
+          description: The list of created or updated books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+
+  #TODO Fix it
+  /books/{bId}/authors/{aId}:
+    description: Crupdate the author of a book
+    put:
+      tags:
+        - Books
+      parameters:
+        - name: bId
+          in: path
+          description: |
+            Id of the book
+          schema:
+            type: string
+          required: true
+        - name: aId
+          in: path
+          description: |
+            Id of the author
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Successfully updated the author of the book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /books/import:
+    description: Import books from JSON and Excel files
+    post:
+      tags:
+        - Books
+      requestBody:
+        content:
+          application/ms-excel:
+            schema:
+              $ref: '#/components/schemas/ImportedBooks'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportedBooks'
+      responses:
+        200:
+          description: Return the inserted books with their IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+  /authors:
+    get:
+      summary: Get all authors
+      operationId: getAuthors
+      security: []
+      tags:
+        - Authors
+      parameters:
+        - name: authorName
+          in: query
+          description: |
+            Filter returned authors by given name. 
+            If not provided, then list is not filtered.
+          schema:
+            type: string
+          required: false
+      responses:
+        200:
+          description: The list of filtered authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+    put:
+      summary: Create or update authors
+      operationId: crupdateAuthors
+      tags:
+        - Authors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CrupdateBook'
+      responses:
+        200:
+          description: The list of created or updated authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+    delete:
+      summary: Delete one or multiple authors
+      operationId: deleteAuthors
+      tags:
+        - Authors
+      parameters:
+        - in: query
+          name: authorIds
+          description: IDs of the authors to be deleted
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          description: Successfully deleted
+  /authors/{aId}:
+    delete:
+      summary: Delete an author
+      operationId: deleteAuthor
+      tags:
+        - Authors
+      parameters:
+        - name: aId
+          in: path
+          description: Author identifier to be deleted
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The author deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+  /authors/page/{page}/size/{pageSize}:
+    description: Get paginated list of authors
+    get:
+      tags:
+        - Authors
+      parameters:
+        - $ref: '#/components/parameters/pathPagination'
+        - in: path
+          name: pageSize
+          schema:
+            type: integer
+            default: 50
+          required: true
+      responses:
+        200:
+          description: List of paginated Authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+  /authors/import:
+    description: Import authors from JSON and Excel files
+    post:
+      tags:
+        - Authors
+      requestBody:
+        content:
+          application/ms-excel:
+            schema:
+              $ref: '#/components/schemas/ImportedAuthors'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportedAuthors'
+      responses:
+        200:
+          description: Return the inserted authors with their IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+
+  /visitors/{vId}/borrow/{bId}:
+    put:
+      summary: Visitor borrows or returns a book
+      operationId: borrowBook
+      tags:
+        - Visitors
+      parameters:
+        - $ref: '#/components/parameters/VisitorId'
+        - $ref: '#/components/parameters/BookId'
+        - in: query
+          name: action
+          schema:
+            type: string
+            enum:
+              - borrow
+              - return
+          required: true
+      responses:
+        200:
+          description: Book successfully borrowed by the visitor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /visitors/{vId}/activity:
+    get:
+      summary: Get the Borrowing and Returns of a visitor in a interval of time
+      operationId: getVisitorActivity
+      tags:
+        - Visitors
+      parameters:
+        - $ref: '#/components/parameters/VisitorId'
+        - in: query
+          name: startDatetime
+          schema:
+            type: string
+            format: date-time
+          required: true
+        - in: query
+          name: endDateTime
+          schema:
+            type: string
+            format: date-time
+          required: true
+      responses:
+        200:
+          description: Successfully got the activity history of the visitor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  anyOf:
+                    - $ref: '#/components/schemas/Borrowing'
+                    - $ref: '#/components/schemas/Return'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Sex:
+      type: string
+      enum:
+        - M
+        - F
+    ParentBooks:
+      type: object
+      properties:
+        bookName:
+          type: string
+        author:
+          $ref: '#/components/schemas/Author'
+        pageNumbers:
+          type: integer
+        topic:
+          type: string
+          enum:
+            - ROMANCE
+            - COMEDY
+            - OTHER
+        releaseDate:
+          type: string
+          format: date
+    Book:
+      allOf:
+        - $ref: '#/components/schemas/ParentBooks'
+      properties:
+        id:
+          type: string
+        status: 
+          type: boolean
+          default: true
+        borrower:
+          $ref: '#/components/schemas/Visitor'
+          
+    CrupdateBook:
+      allOf:
+        - $ref: '#/components/schemas/Book'
+        - type: object
+          required:
+            - id
+            - bookName
+            - pageNumbers
+            - topic
+            - releaseDate
+    ImportedBooks:
+      allOf:
+        - $ref: '#/components/schemas/ParentBooks'
+      properties:
+        authorId:
+          type: string
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+        authorName:
+          type: string
+        sex:
+          $ref: '#/components/schemas/Sex'
+
+    Visitor:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        reference:
+          type: string
+
+    UpdateBookAuthor:
+      type: object
+      properties:
+        bookId:
+          type: string
+        authorId:
+          type: string
+
+    Activity:
+      type: object
+      properties:
+        vId:
+          type: string
+        bId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+
+    Borrowing:
+      allOf:
+        - $ref: '#/components/schemas/Activity'
+
+    Return:
+      allOf:
+        - $ref: '#/components/schemas/Activity'
+
+    ResponseStatus:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+    ResponseContent:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ResponseStatus'
+        body:
+          type: object
+    InternalServerErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseContent'
+      example:
+        status: 500
+        message: Internal server error
+    BadRequestResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseContent'
+      example:
+        status: 400
+        message: Bad request
+    ForbiddenResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseContent'
+      example:
+        status: 403
+        message: Forbidden
+
+    BookResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseContent'
+      properties:
+        body:
+          $ref: '#/components/schemas/Book'
+
+    BookListResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseContent'
+      properties:
+        body:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+
+    ImportedAuthors:
+      type: object
+      properties:
+        authorName:
+          type: string
+        sex:
+          type: string
+          enum:
+            - M
+            - F
+  parameters:
+
+    BookStatus:
+      name: status
+      in: path
+      description: Status of the books (borrowed or available)
+      required: true
+      schema:
+        type: string
+        enum:
+          - borrowed
+          - available
+
+    queryPagination:
+      name: page
+      in: query
+      description: |
+        Query parameter referencing page number
+      schema:
+        type: integer
+        default: 10
+      required: false
+    pathPagination:
+      name: page
+      in: path
+      description: |
+        Path parameter referencing page number
+      schema:
+        type: integer
+        default: 10
+      required: true
+
+    VisitorId:
+      name: vId
+      in: path
+      description: ID of the visitor
+      schema:
+        type: string
+      required: true
+
+    BookId:
+      name: bId
+      in: path
+      description: ID of the book
+      schema:
+        type: string
+      required: true
+
+  responses:
+    BookList_200:
+      description: Successfully returned a list of books
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BookListResponse'
+
+    InternalServerError:
+      description: A error occurred during operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerErrorResponse'
+    BadRequest:
+      description: Operation can't be completed due to bad request from client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestResponse'
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenResponse'
+
