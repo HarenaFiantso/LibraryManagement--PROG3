@@ -4,9 +4,7 @@ import org.example.CRUDOperations;
 import org.example.DatabaseConnection;
 import org.example.entity.Subscriber;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +44,25 @@ public class SubscriberCrudOperations implements CRUDOperations<Subscriber> {
 
     @Override
     public Subscriber save(Subscriber toSave) {
-        return null;
+        String INSERT_QUERY = "INSERT INTO subscriber (subscriber_name, sex) VALUES (?, ?);";
+        Subscriber subscriber = null;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, toSave.getSubscriberName());
+            statement.setString(2, toSave.getSex());
+            statement.executeUpdate();
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+
+            if (resultSet.next()) {
+                toSave.setSubscriberId(resultSet.getLong(1));
+                subscriber = toSave;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return subscriber;
     }
 
     @Override
