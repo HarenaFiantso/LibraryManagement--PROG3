@@ -10,7 +10,7 @@ import java.util.List;
 public class BookTest {
     private final static BookCrudOperations bookCrudOperations = new BookCrudOperations();
 
-    public static void launch() {
+    public static void run() {
         Utils.printList(bookCrudOperations.findAll());
 
         System.out.println(bookCrudOperations.save(new Book("", "Book 4", 200, Date.valueOf("2023-01-01"), List.of(Topic.COMEDY), null)));

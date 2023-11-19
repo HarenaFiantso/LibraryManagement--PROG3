@@ -9,7 +9,7 @@ import java.util.List;
 public class AuthorTest {
     private final static AuthorCrudOperations authorCrudOperations = new AuthorCrudOperations();
 
-    public static void launch() {
+    public static void run() {
         Utils.printList(authorCrudOperations.findAll());
 
         System.out.println(authorCrudOperations.save(
