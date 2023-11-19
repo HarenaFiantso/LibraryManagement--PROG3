@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS author (
 );
 
 -- Add three lines of data by default
-INSERT INTO author (author_name, sex) VALUE
+INSERT INTO author (author_name, sex) VALUES
 ('Author 1', 'M'),
 ('Author 2', 'F'),
 ('Author 3', 'F');
