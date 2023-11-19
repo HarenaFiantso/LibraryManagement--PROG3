@@ -35,12 +35,14 @@ public class AuthorCrudOperations implements CRUDOperations {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return authors;
     }
 
     @Override
     public List saveAll(List toSave) {
-        return null;
+        List<Author> authors = new ArrayList<>();
+        toSave.forEach(e -> authors.add(save(e)));
+        return authors;
     }
 
     @Override
