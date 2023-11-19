@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Other gitignore files ###
+src/main/java/org/example/env.properties
