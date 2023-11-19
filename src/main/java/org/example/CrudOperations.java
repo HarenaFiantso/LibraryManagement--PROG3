@@ -2,7 +2,7 @@ package org.example;
 
 import java.util.List;
 
-public interface CRUDOperations<T> {
+public interface CrudOperations<T> {
     List<T> findAll();
 
     List<T> saveAll(List<T> toSave);
